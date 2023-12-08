@@ -46,8 +46,8 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-10">
-      <div className="container space-y-6">
+    <main className="flex min-h-screen flex-col items-center justify-between p-5 md:p-10">
+      <div className="min-w-full md:min-w-[70%] space-y-6">
         <h1 className="text-xl font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           Ask from ChatBot
         </h1>
