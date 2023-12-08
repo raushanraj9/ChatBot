@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import MessageModel from "./schema/schema.js";
+import cors from 'cors';
 
 dotenv.config();
 
@@ -11,6 +12,8 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cors());
 
 // OpenAI configuration.
 const openai = new OpenAI({

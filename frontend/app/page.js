@@ -22,8 +22,8 @@ export default function Home() {
 
     try {
       const { data } = await axios.get(apiUrl);
-      if ("messages" in data) {
-        setMessages((prevMessages) => data.messages);
+      if ("messages" in data.data) {
+        setMessages((prevMessages) => data.data.messages);
       } else {
         /**
          * @TODO
