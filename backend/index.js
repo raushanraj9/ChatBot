@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import MessageModel from "./schema/schema.js";
 
 dotenv.config();
 
@@ -26,6 +27,16 @@ db.once("open", () => {
 });
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
+app.get("/conversation", async (req, res) => {
+  const allMessages = await MessageModel.find();
+  return res.json({
+    status: 200,
+    data: {
+      messages: allMessages,
+    },
+  });
+});
+
 // API for conversation
 app.post("/conversation", async (req, res) => {
   const message = req.body.message;
@@ -36,6 +47,19 @@ app.post("/conversation", async (req, res) => {
       message: "Message cannot be empty!",
     });
   }
+
+  const newMessage = new MessageModel({
+    role: "user",
+    content: message,
+  });
+  const newMessageResp = await newMessage.save();
+
+  return res.json({
+    status: 200,
+    data: {
+      message: newMessageResp,
+    },
+  });
 
   // Calling the OpenAI API to complete the message
   try {
