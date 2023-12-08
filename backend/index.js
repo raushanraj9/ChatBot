@@ -1,9 +1,9 @@
-const express = require("express");
-const OpenAI = require("openai");
+import express from "express";
+import OpenAI from "openai";
+import bodyParser from "body-parser";
+import dotenv from 'dotenv';
 
-require("dotenv").config();
-
-const bodyParser = require("body-parser");
+dotenv.config();
 
 const app = express();
 
