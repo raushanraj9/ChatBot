@@ -1,7 +1,8 @@
 import express from "express";
 import OpenAI from "openai";
 import bodyParser from "body-parser";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 dotenv.config();
 
@@ -10,11 +11,23 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// OpenAI configuration.
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-app.post("/converse", async (req, res) => {
+// Connect with MongoDB.
+const mongodbConnectionUrl = process.env.MONGODB_CONNECTION_URL;
+mongoose.connect(mongodbConnectionUrl);
+
+const db = mongoose.connection;
+db.once("open", () => {
+  console.log("DB connected");
+});
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+
+// API for conversation
+app.post("/conversation", async (req, res) => {
   const message = req.body.message;
 
   if (!message) {
