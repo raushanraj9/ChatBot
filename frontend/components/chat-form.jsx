@@ -11,6 +11,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { BASE_API_URL } from "@/config/site";
+import axios from 'axios';
 
 const formSchema = z.object({
   prompt: z.string().min(1),
@@ -24,7 +26,7 @@ const ChatForm = ( { appendMessage } ) => {
     },
   });
 
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
 	/**
 	 * @todo
 	 * Make API call to backend
@@ -33,7 +35,18 @@ const ChatForm = ( { appendMessage } ) => {
 		role: 'user',
 		content: values.prompt,
 	}
-	appendMessage( newMessage );
+
+	const apiUrl = `${BASE_API_URL}/conversation`;
+	const { data } = await axios.post( apiUrl, {
+		message: newMessage.content,
+	} );
+
+	if ( 'message' in data && data.message?._id ) {
+		newMessage._id = data.message._id;
+		appendMessage( newMessage );
+	} else {
+		// throw error
+	}
   }
 
   return (

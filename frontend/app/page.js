@@ -1,8 +1,10 @@
 "use client";
 
 import ChatForm from "@/components/chat-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MessageView from "@/components/message-view";
+import { BASE_API_URL } from "@/config/site";
+import axios from "axios";
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
@@ -15,6 +17,34 @@ export default function Home() {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
   };
 
+  const fetchAllMessages = async () => {
+    const apiUrl = `${BASE_API_URL}/conversation`;
+
+    try {
+      const { data } = await axios.get(apiUrl);
+      if ("messages" in data) {
+        setMessages((prevMessages) => data.messages);
+      } else {
+        /**
+         * @TODO
+         * throw error
+         */
+      }
+    } catch (err) {
+      /**
+       * @TODO
+       * Throw error
+       */
+    }
+  };
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      await fetchAllMessages();
+    };
+    fetchMessages();
+  }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-10">
       <div className="container space-y-6">
@@ -22,7 +52,7 @@ export default function Home() {
           Ask from ChatBot
         </h1>
         <ChatForm appendMessage={appendMessage} />
-		<MessageView messages={messages} />
+        <MessageView messages={messages} />
       </div>
     </main>
   );
