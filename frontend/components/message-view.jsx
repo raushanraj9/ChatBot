@@ -6,13 +6,7 @@ import { Spinner } from "./ui/spinner";
 const MessageView = ({ messages, isLoading }) => {
   return (
     <div className="border-2 border-solid h-[75vh]">
-      {isLoading ? (
-        <div className="flex w-full h-full justify-center items-center">
-          <Spinner />
-        </div>
-      ) : (
-        <>
-          {messages.length > 0 ? (
+		{messages.length > 0 ? (
             <div className="space-y-2 h-full overflow-auto p-5">
               {messages.map((message) => (
                 <div
@@ -27,7 +21,7 @@ const MessageView = ({ messages, isLoading }) => {
                       {message.role === "user" ? "You" : "Bot"}
                     </AvatarFallback>
                   </Avatar>
-                  <p>{message.content}</p>
+                  <p>{message.content} : {message._id}</p>
                 </div>
               ))}
             </div>
@@ -36,8 +30,15 @@ const MessageView = ({ messages, isLoading }) => {
               No message yet! Start chatting now!!!
             </p>
           )}
+      {/* {isLoading ? (
+        <div className="flex w-full h-full justify-center items-center">
+          <Spinner />
+        </div>
+      ) : (
+        <>
+
         </>
-      )}
+      )} */}
     </div>
   );
 };

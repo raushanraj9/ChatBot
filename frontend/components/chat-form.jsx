@@ -14,12 +14,13 @@ import { Input } from "@/components/ui/input";
 import { BASE_API_URL } from "@/config/site";
 import axios from "axios";
 import { Spinner } from "./ui/spinner";
+import { socket } from "@/lib/socket";
 
 const formSchema = z.object({
   prompt: z.string().min(1),
 });
 
-const ChatForm = ({ appendMessage, isLoading }) => {
+const ChatForm = ({ appendMessage, isLoading, setIsLoading }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,6 +37,10 @@ const ChatForm = ({ appendMessage, isLoading }) => {
       role: "user",
       content: values.prompt,
     };
+
+	setIsLoading(true);
+	socket.emit('user-message', newMessage.content);
+	return;
 
     const apiUrl = `${BASE_API_URL}/conversation`;
     const { data } = await axios.post(apiUrl, {

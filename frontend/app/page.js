@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import MessageView from "@/components/message-view";
 import { BASE_API_URL } from "@/config/site";
 import axios from "axios";
+import { socket } from "@/lib/socket";
 
 export default function Home() {
+  const [isConnected, setIsConnected] = useState(socket.connected);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,9 +44,34 @@ export default function Home() {
   useEffect(() => {
     const fetchMessages = async () => {
       await fetchAllMessages();
-	  setIsLoading(false);
+      setIsLoading(false);
     };
     fetchMessages();
+
+    // Socket connections
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+	socket.on('user-message-ack', (newMessage) => {
+		appendMessage(newMessage);
+	});
+	socket.on('assistant-message', (newMessage) => {
+		console.log('received assistant message');
+		appendMessage(newMessage);
+		setIsLoading(false);
+	});
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+    };
   }, []);
 
   return (
@@ -54,7 +81,7 @@ export default function Home() {
           Ask from ChatBot
         </h1>
         <MessageView messages={messages} isLoading={isLoading} />
-		<ChatForm appendMessage={appendMessage} isLoading={isLoading} />
+        <ChatForm appendMessage={appendMessage} isLoading={isLoading} setIsLoading={setIsLoading} />
       </div>
     </main>
   );
