@@ -8,6 +8,7 @@ import axios from "axios";
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const appendMessage = (newMessage) => {
     /**
@@ -41,6 +42,7 @@ export default function Home() {
   useEffect(() => {
     const fetchMessages = async () => {
       await fetchAllMessages();
+	  setIsLoading(false);
     };
     fetchMessages();
   }, []);
@@ -51,8 +53,8 @@ export default function Home() {
         <h1 className="text-xl font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           Ask from ChatBot
         </h1>
-        <ChatForm appendMessage={appendMessage} />
-        <MessageView messages={messages} />
+        <MessageView messages={messages} isLoading={isLoading} />
+		<ChatForm appendMessage={appendMessage} isLoading={isLoading} />
       </div>
     </main>
   );

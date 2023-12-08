@@ -13,12 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { BASE_API_URL } from "@/config/site";
 import axios from "axios";
+import { Spinner } from "./ui/spinner";
 
 const formSchema = z.object({
   prompt: z.string().min(1),
 });
 
-const ChatForm = ({ appendMessage }) => {
+const ChatForm = ({ appendMessage, isLoading }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,7 +57,7 @@ const ChatForm = ({ appendMessage }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex items-center gap-4"
+        className="flex gap-4"
       >
         <FormField
           control={form.control}
@@ -70,7 +71,7 @@ const ChatForm = ({ appendMessage }) => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isLoading} >Submit</Button>
       </form>
     </Form>
   );
