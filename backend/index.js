@@ -47,18 +47,13 @@ io.on("connection", (socket) => {
       content: messageString,
     });
     const newMessageResp = await newMessage.save();
-    // const newMessageResp = {
-    // 	role: "user",
-    // 	content: messageString,
-    // 	_id: 'lsdo9w98i23k',
-    // };
     io.emit("user-message-ack", newMessageResp);
     getInTouchWithOpenAI(newMessageResp.role, newMessageResp.content);
   });
 });
 
 app.get("/conversation", async (req, res) => {
-  const allMessages = await MessageModel.find();
+  const allMessages = await MessageModel.find().limit(20).sort({ timestamp: -1 });
   return res.json({
     status: 200,
     data: {
@@ -122,15 +117,16 @@ app.post("/conversation", async (req, res) => {
 });
 
 const getInTouchWithOpenAI = async (role, messageString) => {
-  // setTimeout(() => {
-  // 	io.emit('assistant-message', {role: 'assistant',content: 'Yah! this is the reply', _id: 'ksjs8829ijsj'});
-  // }, 2000);
+  let previousMessages = await MessageModel.find().limit(3).skip(1).sort({ timestamp: -1 });
+  previousMessages = previousMessages.map( (previousMessage) => ({
+	role: previousMessage.role,
+	content: previousMessage.content,
+  } ) );
 
-  // return;
   // Calling the OpenAI API to complete the message
   try {
     const chatCompletion = await openai.chat.completions.create({
-      messages: [{ role, content: messageString }],
+      messages: [ ...previousMessages, { role, content: messageString }],
       model: "gpt-3.5-turbo",
     });
     console.log("open ai result", chatCompletion.choices[0]);

@@ -17,7 +17,7 @@ export default function Home() {
      * @TODO
      * Remove spread operator and use push instead for performance issues.
      */
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    setMessages((prevMessages) => [newMessage, ...prevMessages]);
   };
 
   const fetchAllMessages = async () => {
@@ -76,12 +76,12 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-5 md:p-10">
-      <div className="min-w-full md:min-w-[70%] space-y-6">
+      <div className="w-full md:w-[70%] space-y-6">
         <h1 className="text-xl font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           Ask from ChatBot
         </h1>
+		<ChatForm isLoading={isLoading} setIsLoading={setIsLoading} />
         <MessageView messages={messages} isLoading={isLoading} />
-        <ChatForm appendMessage={appendMessage} isLoading={isLoading} setIsLoading={setIsLoading} />
       </div>
     </main>
   );
