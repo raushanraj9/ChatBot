@@ -107,3 +107,9 @@ npm start
 
 - **GET /conversation**
 	Retrieve up to twenty conversation messages.
+
+
+## Improvements
+- Every user will get the same conversation message it would be to integrate sign, register or some other mechanism to identify user uniquely like having a unique identifier on client side for example local storage.
+- Improvement in UI for viewing conversation messages
+- Adding multi-line support for user prompt
