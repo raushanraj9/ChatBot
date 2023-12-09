@@ -10,6 +10,8 @@ import { createServer } from "http";
 
 dotenv.config();
 
+const PORT = process.env.PORT || 3003;
+
 const app = express();
 const httpServer = createServer(app);
 
@@ -149,4 +151,4 @@ const getInTouchWithOpenAI = async (role, messageString) => {
   }
 };
 
-httpServer.listen(5000);
+httpServer.listen(PORT);
